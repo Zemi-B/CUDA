@@ -12,8 +12,8 @@ __global__ void cudaKernel(int gpu[]){
     int yid=blockIdx.y*blockDim.y+threadIdx.y;
     //50近傍の和を愚直にとる
     int V=0,kaz=0;
-    for(int dy=-50;dy<=50;dy++){
-        for(int dx=-50;dx<=50;dy++){
+    for(int dy=0;dy<50;dy++){
+        for(int dx=0;dx<50;dy++){
             int sx=xid-dx;
             int sy=yid-dy;
             if(sx<0||sy<0||sx>X||sy>Y){continue;}
@@ -22,7 +22,7 @@ __global__ void cudaKernel(int gpu[]){
         }
     }
     __syncthreads();
-    if(0<=yid&&yid<Y&&0<=xid&&xid<X){
+    if(0<=yid&&yid+50<Y&&0<=xid&&xid+50<X){
         gpu[yid*X+xid]=V/kaz;
     }
    
@@ -56,7 +56,7 @@ int main(int argc, char** argv){
                 break;
         }
         if (i == 1) {
-            fprintf(fpout, "%d %d\n", Y, X);
+            fprintf(fpout, "%d %d\n", X-50, Y-50);
         }
     }
 
@@ -86,8 +86,8 @@ int main(int argc, char** argv){
     cudaMemcpy(pic, picgpu, sizeof(int)*X*Y, cudaMemcpyDeviceToHost);
     printf("debug%d\n",__LINE__);
     
-    for (int i = 0; i < Y; ++i) {
-        for (int j = 0; j < X; ++j) {
+    for (int i = 0; i+50 < Y; ++i) {
+        for (int j = 0; j+50 < X; ++j) {
             fputc(pic[i][j], fpout);
         }
     }
