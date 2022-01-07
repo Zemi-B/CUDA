@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include<cuda_runtime.h>
-
+#include <stdlib.h>
 #define N 100
 
 const int X=5716,Y=3731;
@@ -30,10 +30,12 @@ __global__ void cudaKernel(int gpu[]){
 
 int main(int argc, char** argv){
     
-    static int pic[Y][X];
+    //static int pic[Y*X];
+    int* pic;
     int* picgpu;
     unsigned int * gpuwa;
-
+    
+    pic=(int*)malloc(sizeof(int)*X*Y);
     //デバイスの初期化
     //CUT_DEVICE_INIT(argc, argv);
 
@@ -63,7 +65,7 @@ int main(int argc, char** argv){
     for (int i = 0; i < Y; ++i) {
         for (int j = 0; j < X; ++j) {
             ch = fgetc(fpin);
-            pic[i][j] = ch;
+            pic[i*X+j] = ch;
         }
     }
     printf("debug%d\n",__LINE__);
@@ -88,14 +90,14 @@ int main(int argc, char** argv){
     
     for (int i = 0; i+50 < Y; ++i) {
         for (int j = 0; j+50 < X; ++j) {
-            fputc(pic[i][j], fpout);
+            fputc(pic[i*X+j], fpout);
         }
     }
     printf("debug%d\n",__LINE__);
     fclose(fpin);
     fclose(fpout);
     // ホストメモリ解放
-    //free(pic);
+    free(pic);
     
     // デバイスメモリ解放
     cudaFree(picgpu);
