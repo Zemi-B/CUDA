@@ -5,7 +5,7 @@
 
 const int X=5716,Y=3731;
 // カーネル(GPUの関数)
-__global__ void cudaKernel(int *gpu){
+__global__ void cudaKernel(int gpu[Y][X]){
     // スレッドID
 
     int xid=blockIdx.x*blockDim.x+threadIdx.x;
@@ -27,12 +27,12 @@ __global__ void cudaKernel(int *gpu){
 
 int main(int argc, char** argv){
     
-    int pic[ysize][xsize];
+    int pic[Y][X];
     int* picgpu;
     unsigned int * gpuwa;
 
     //デバイスの初期化
-    CUDA_DEVICE_INIT(argc, argv);
+    CUT_DEVICE_INIT(argc, argv);
 
     FILE *fpin, *fpout;
     char *fin = argv[1];
@@ -65,11 +65,11 @@ int main(int argc, char** argv){
     }
 
     // デバイス(GPU)のメモリ領域確保
-    CUDA_SAFE_CALL(cudaMalloc((void**)&picgpu, sizeof(int)*X*Y));
-    CUDA_SAFE_CALL(cudaMalloc((void**)&gpuwa, sizeof(int)*X*Y));
+    CUT_SAFE_CALL(cudaMalloc((void**)&picgpu, sizeof(int)*X*Y));
+    CUT_SAFE_CALL(cudaMalloc((void**)&gpuwa, sizeof(int)*X*Y));
 
     // ホスト(CPU)からデバイス(GPU)へ転送
-    CUDA_SAFE_CALL(cudaMemcpy(pic, picgpu, sizeof(int)*X*Y, cudaMemcpyHostToDevice));
+    CUT_SAFE_CALL(cudaMemcpy(pic, picgpu, sizeof(int)*X*Y, cudaMemcpyHostToDevice));
 
     
     // スレッド数、ブロック数の設定(説明は他のページ)
@@ -80,7 +80,7 @@ int main(int argc, char** argv){
     cudaKernel<<< blocks, threads >>>(gpu);
 
     // デバイス(GPU)からホスト(CPU)へ転送
-    CUDA_SAFE_CALL(cudaMemcpy(pic, picgpu, sizeof(int)*X*Y, cudaMemcpyDeviceToHost));
+    CUT_SAFE_CALL(cudaMemcpy(pic, picgpu, sizeof(int)*X*Y, cudaMemcpyDeviceToHost));
 
     
     for (int i = 0; i < Y; ++i) {
