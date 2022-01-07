@@ -1,5 +1,5 @@
 #include <stdio.h>
-
+#include<cutil.h>
 
 #define N 100
 
@@ -65,11 +65,11 @@ int main(int argc, char** argv){
     }
 
     // デバイス(GPU)のメモリ領域確保
-    CUT_SAFE_CALL(cudaMalloc((void**)&picgpu, sizeof(int)*X*Y));
-    CUT_SAFE_CALL(cudaMalloc((void**)&gpuwa, sizeof(int)*X*Y));
+    cudaMalloc((void**)&picgpu, sizeof(int)*X*Y);
+    cudaMalloc((void**)&gpuwa, sizeof(int)*X*Y);
 
     // ホスト(CPU)からデバイス(GPU)へ転送
-    CUT_SAFE_CALL(cudaMemcpy(pic, picgpu, sizeof(int)*X*Y, cudaMemcpyHostToDevice));
+    cudaMemcpy(pic, picgpu, sizeof(int)*X*Y, cudaMemcpyHostToDevice);
 
     
     // スレッド数、ブロック数の設定(説明は他のページ)
@@ -80,7 +80,7 @@ int main(int argc, char** argv){
     cudaKernel<<< blocks, threads >>>(gpu);
 
     // デバイス(GPU)からホスト(CPU)へ転送
-    CUT_SAFE_CALL(cudaMemcpy(pic, picgpu, sizeof(int)*X*Y, cudaMemcpyDeviceToHost));
+    cudaMemcpy(pic, picgpu, sizeof(int)*X*Y, cudaMemcpyDeviceToHost);
 
     
     for (int i = 0; i < Y; ++i) {
