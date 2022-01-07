@@ -74,10 +74,10 @@ int main(int argc, char** argv){
     
     // スレッド数、ブロック数の設定(説明は他のページ)
     dim3 blocks(16,16);
-    dim3 threads((ysize+15)/16,(xsize+15)/16);
+    dim3 threads((Y+15)/16,(X+15)/16);
 
     // カーネル(GPUの関数)実行
-    cudaKernel<<< blocks, threads >>>(gpu);
+    cudaKernel<<< blocks, threads >>>(picgpu);
 
     // デバイス(GPU)からホスト(CPU)へ転送
     cudaMemcpy(pic, picgpu, sizeof(int)*X*Y, cudaMemcpyDeviceToHost);
@@ -85,7 +85,7 @@ int main(int argc, char** argv){
     
     for (int i = 0; i < Y; ++i) {
         for (int j = 0; j < X; ++j) {
-            fputc(ans[i][j], fpout);
+            fputc(picgpu[i][j], fpout);
         }
     }
 
@@ -95,9 +95,9 @@ int main(int argc, char** argv){
     free(pic);
     
     // デバイスメモリ解放
-    CUDA_SAFE_CALL(cudaFree(picgpu));
-    CUDA_SAFE_CALL(cudaFree(gpuwa));
+    cudaFree(picgpu);
+   cudaFree(gpuwa);
     // 終了処理
-    CUT_EXIT(argc, argv);
+    //CUT_EXIT(argc, argv);
     return 0;
 }
