@@ -23,7 +23,7 @@ __global__ void cudaKernel(int gpu[]){
     }
     __syncthreads();
     if(0<=yid&&yid<Y&&0<=xid&&xid<X){
-        gpu[yid*Y+xid]=V/kaz;
+        gpu[yid*X+xid]=V/kaz;
     }
    
 }
