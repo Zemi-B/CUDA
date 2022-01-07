@@ -1,11 +1,11 @@
 #include <stdio.h>
-//#include<cutil.h>
+#include<cuda_runtime.h.h>
 
 #define N 100
 
 const int X=5716,Y=3731;
 // カーネル(GPUの関数)
-__global__ void cudaKernel(int gpu[Y][X]){
+__global__ void cudaKernel(int gpu[]){
     // スレッドID
 
     int xid=blockIdx.x*blockDim.x+threadIdx.x;
@@ -17,12 +17,15 @@ __global__ void cudaKernel(int gpu[Y][X]){
             int sx=xid-dx;
             int sy=yid-dy;
             if(sx<0||sy<0||sx>X||sy>Y){continue;}
-            V+=gpu[sy][sx];
+            V+=gpu[sy*X+sx];
             kaz++;
         }
     }
     __syncthreads();
-    gpu[yid][xid]=V/kaz;
+    if(0<=yid&&yid<Y&&0<=xid&&xid<X){
+        gpu[yid][xid]=V/kaz;
+    }
+   
 }
 
 int main(int argc, char** argv){
@@ -32,7 +35,7 @@ int main(int argc, char** argv){
     unsigned int * gpuwa;
 
     //デバイスの初期化
-    CUT_DEVICE_INIT(argc, argv);
+    //CUT_DEVICE_INIT(argc, argv);
 
     FILE *fpin, *fpout;
     char *fin = argv[1];
@@ -53,7 +56,7 @@ int main(int argc, char** argv){
                 break;
         }
         if (i == 1) {
-            fprintf(fpout, "%d %d\n", Y - W, X - W);
+            fprintf(fpout, "%d %d\n", Y, X);
         }
     }
 
@@ -85,7 +88,7 @@ int main(int argc, char** argv){
     
     for (int i = 0; i < Y; ++i) {
         for (int j = 0; j < X; ++j) {
-            fputc(picgpu[i][j], fpout);
+            fputc(picgpu[i*X+j], fpout);
         }
     }
 
@@ -96,7 +99,7 @@ int main(int argc, char** argv){
     
     // デバイスメモリ解放
     cudaFree(picgpu);
-   cudaFree(gpuwa);
+    cudaFree(gpuwa);
     // 終了処理
     //CUT_EXIT(argc, argv);
     return 0;
