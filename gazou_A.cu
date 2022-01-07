@@ -49,7 +49,7 @@ int main(int argc, char** argv){
     printf("debug%d\n",__LINE__);
     //xとyをどうするかについて考える
     //bmp形式について考える
-    char ch;
+    unsigned char ch;
     for (int i = 0; i < 3; ++i) {
         while ((ch = fgetc(fpin)) != EOF) {
             if (i != 1){ fputc(ch, fpout);}
