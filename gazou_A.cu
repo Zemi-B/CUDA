@@ -66,6 +66,7 @@ int main(int argc, char** argv){
         for (int j = 0; j < X; ++j) {
             ch = fgetc(fpin);
             pic[i*X+j] = ch;
+            if((i*X+j)%100000==0){printf("%d",(int)ch);}
         }
     }
     printf("debug%d\n",__LINE__);
