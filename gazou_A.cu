@@ -75,7 +75,7 @@ int main(int argc, char** argv){
     cudaMalloc((void**)&gpuwa, sizeof(int)*X*Y);
 
     // ホスト(CPU)からデバイス(GPU)へ転送
-    cudaMemcpy(pic, picgpu, sizeof(int)*X*Y, cudaMemcpyHostToDevice);
+    cudaMemcpy(picgpu, pic, sizeof(int)*X*Y, cudaMemcpyHostToDevice);
 
     printf("debug%d\n",__LINE__);
     // スレッド数、ブロック数の設定(説明は他のページ)
