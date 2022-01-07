@@ -66,7 +66,7 @@ int main(int argc, char** argv){
         for (int j = 0; j < X; ++j) {
             ch = fgetc(fpin);
             pic[i*X+j] = ch;
-            if((i*X+j)%100000==0){printf("%d",(int)ch);}
+            if((i*X+j)%300000==0){printf("%d\n",(int)ch);}
         }
     }
     printf("debug%d\n",__LINE__);
@@ -92,6 +92,7 @@ int main(int argc, char** argv){
     for (int i = 0; i+50 < Y; ++i) {
         for (int j = 0; j+50 < X; ++j) {
             fputc(pic[i*X+j], fpout);
+            if((i*X+j)%300000==0){printf("%d\n",(int)pic[i*X+j]);}
         }
     }
     printf("debug%d\n",__LINE__);
