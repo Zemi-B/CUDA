@@ -88,7 +88,7 @@ int main(int argc, char** argv){
     
     for (int i = 0; i < Y; ++i) {
         for (int j = 0; j < X; ++j) {
-            fputc(picgpu[i*X+j], fpout);
+            fputc(pic[i*X+j], fpout);
         }
     }
     printf("debug%d\n",__LINE__);
