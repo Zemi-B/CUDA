@@ -30,7 +30,7 @@ __global__ void cudaKernel(int gpu[]){
 
 int main(int argc, char** argv){
     
-    int pic[Y][X];
+    static int pic[Y][X];
     int* picgpu;
     unsigned int * gpuwa;
 
