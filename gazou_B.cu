@@ -5,7 +5,13 @@
 
 const int xsize=5716,ysize=3731;
 // カーネル(GPUの関数)
+//累積和を用いてゴリゴリに高速化
 __global__ void cudaKernel(int *gpu){
+    //X座標についてとる
+    //Y座標について取る
+    //足す
+
+
     // スレッドID
 
     int xid=blockIdx.x*blockDim.x+threadIdx.x;
