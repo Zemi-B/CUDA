@@ -95,7 +95,7 @@ int main(int argc, char** argv){
     fclose(fpin);
     fclose(fpout);
     // ホストメモリ解放
-    free(pic);
+    //free(pic);
     
     // デバイスメモリ解放
     cudaFree(picgpu);
