@@ -52,13 +52,13 @@ int main(int argc, char** argv){
     char ch;
     for (int i = 0; i < 3; ++i) {
         while ((ch = fgetc(fpin)) != EOF) {
-            if (i != 1)
-                fputc(ch, fpout);
-            if (ch == '\n')
-                break;
+            if (i != 1){ fputc(ch, fpout);}
+            if(i==1){printf("%c",ch);}
+            if (ch == '\n'){break;}
         }
         if (i == 1) {
             fprintf(fpout, "%d %d\n", X-50, Y-50);
+            printf("%d %d\n", X-50, Y-50);
         }
     }
 
