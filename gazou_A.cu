@@ -44,7 +44,7 @@ int main(int argc, char** argv){
     fpin = fopen(fin, "r");
     fpout = fopen(fout, "w");
     // xの初期化
-
+    printf("debug%d\n",__LINE__);
     //xとyをどうするかについて考える
     //bmp形式について考える
     char ch;
@@ -66,7 +66,7 @@ int main(int argc, char** argv){
             pic[i][j] = ch;
         }
     }
-
+    printf("debug%d\n",__LINE__);
     // デバイス(GPU)のメモリ領域確保
     cudaMalloc((void**)&picgpu, sizeof(int)*X*Y);
     cudaMalloc((void**)&gpuwa, sizeof(int)*X*Y);
@@ -74,7 +74,7 @@ int main(int argc, char** argv){
     // ホスト(CPU)からデバイス(GPU)へ転送
     cudaMemcpy(pic, picgpu, sizeof(int)*X*Y, cudaMemcpyHostToDevice);
 
-    
+    printf("debug%d\n",__LINE__);
     // スレッド数、ブロック数の設定(説明は他のページ)
     dim3 blocks(16,16);
     dim3 threads((Y+15)/16,(X+15)/16);
@@ -84,14 +84,14 @@ int main(int argc, char** argv){
 
     // デバイス(GPU)からホスト(CPU)へ転送
     cudaMemcpy(pic, picgpu, sizeof(int)*X*Y, cudaMemcpyDeviceToHost);
-
+    printf("debug%d\n",__LINE__);
     
     for (int i = 0; i < Y; ++i) {
         for (int j = 0; j < X; ++j) {
             fputc(picgpu[i*X+j], fpout);
         }
     }
-
+    printf("debug%d\n",__LINE__);
     fclose(fpin);
     fclose(fpout);
     // ホストメモリ解放
