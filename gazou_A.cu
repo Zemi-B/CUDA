@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include<cuda_runtime.h.h>
+#include<cuda_runtime.h>
 
 #define N 100
 
