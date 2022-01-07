@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include <cutil.h>
+
 
 #define N 100
 
