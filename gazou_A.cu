@@ -2,7 +2,7 @@
 #include<cuda_runtime.h>
 #include <stdlib.h>
 
-const int X=5716,Y=3731,W=200;
+const int X=5716,Y=3731,W=100;
 // カーネル(GPUの関数)
 __global__ void cudaKernel(int gpu[]){
     // スレッドID
@@ -12,17 +12,17 @@ __global__ void cudaKernel(int gpu[]){
     //W近傍の和を愚直にとる
     int V=0,kaz=0;
     for(int dy=0;dy<W;dy++){
-        for(int dx=0;dx<W;dy++){
-            int sx=xid-dx;
-            int sy=yid-dy;
-            if(sx<0||sy<0||sx>X||sy>Y){continue;}
+        for(int dx=0;dx<W;dx++){
+            int sx=xid+dx;
+            int sy=yid+dy;
+            if(sx<0||sy<0||sx>=X||sy>=Y){continue;}
             V+=gpu[sy*X+sx];
             kaz++;
         }
     }
     __syncthreads();
     if(0<=yid&&yid+W<Y&&0<=xid&&xid+W<X){
-        gpu[yid*X+xid]=V/kaz;
+        gpu[yid*X+xid]=V/(kaz*2);
     }
    
 }
@@ -32,7 +32,7 @@ int main(int argc, char** argv){
     //static int pic[Y*X];
     int* pic;
     int* picgpu;
-    unsigned int * gpuwa;
+    int * gpuwa;
     
     pic=(int*)malloc(sizeof(int)*X*Y);
     //デバイスの初期化
@@ -79,7 +79,7 @@ int main(int argc, char** argv){
     printf("debug%d\n",__LINE__);
     // スレッド数、ブロック数の設定(説明は他のページ)
     dim3 blocks(16,16);
-    dim3 threads((Y+15)/16,(X+15)/16);
+    dim3 threads((X+15)/16,(Y+15)/16);
 
     // カーネル(GPUの関数)実行
     cudaKernel<<< blocks, threads >>>(picgpu);
