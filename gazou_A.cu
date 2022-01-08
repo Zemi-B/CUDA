@@ -83,7 +83,7 @@ int main(int argc, char** argv){
     dim3 threads((Y+15)/16,(X+15)/16);
 
     // カーネル(GPUの関数)実行
-    //cudaKernel<<< blocks, threads >>>(picgpu);
+    cudaKernel<<< blocks, threads >>>(picgpu);
 
     // デバイス(GPU)からホスト(CPU)へ転送
     cudaMemcpy(pic, picgpu, sizeof(int)*X*Y, cudaMemcpyDeviceToHost);
