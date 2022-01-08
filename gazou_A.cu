@@ -4,7 +4,7 @@
 
 const int X=5716,Y=3731,W=100;
 // カーネル(GPUの関数)
-__global__ void cudaKernel(int gpu[]){
+__global__ void cudaKernel(int *gpu){
     // スレッドID
 
     int xid=blockIdx.x*blockDim.x+threadIdx.x;
