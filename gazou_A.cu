@@ -10,6 +10,9 @@ __global__ void cudaKernel(int *gpu){
     int xid=blockIdx.x*blockDim.x+threadIdx.x;
     int yid=blockIdx.y*blockDim.y+threadIdx.y;
     //W近傍の和を愚直にとる
+    if((yid*X+xid)%300000==0){
+        printf("%d\n",(int)pic[yid*X+xid]);
+    }
     int V=0,kaz=0;
     for(int dy=0;dy<W;dy++){
         for(int dx=0;dx<W;dx++){
