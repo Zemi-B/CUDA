@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include<chrono>
 #include <vector>
-#include <chrono>
+#include <iostream>
 const int X=5716,Y=3731,W=50;
 // カーネル(GPUの関数)
 __global__ void cudaKernel(int *gpu){
