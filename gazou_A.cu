@@ -81,8 +81,8 @@ int main(int argc, char** argv){
 
     printf("debug%d\n",__LINE__);
     // スレッド数、ブロック数の設定(説明は他のページ)
-    dim3 blocks(16,16);
-    dim3 threads((X+15)/16,(Y+15)/16);
+    dim3 blocks((X+15)/16,(Y+15)/16);
+    dim3 threads(16,16);
 
     // カーネル(GPUの関数)実行
     cudaKernel<<< blocks, threads >>>(picgpu);
