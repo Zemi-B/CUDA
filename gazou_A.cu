@@ -98,7 +98,7 @@ int main(int argc, char** argv){
         }
     }
     printf("debug%d\n",__LINE__);
-
+    auto dur = end - start;        // 要した時間を計算
     auto msec = std::chrono::duration_cast<std::chrono::milliseconds>(dur).count();
     // 要した時間をミリ秒（1/1000秒）に変換して表示
     std::cout << msec << " milli sec \n";
