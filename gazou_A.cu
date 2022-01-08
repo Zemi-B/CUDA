@@ -1,8 +1,10 @@
 #include <stdio.h>
 #include<cuda_runtime.h>
 #include <stdlib.h>
-
-const int X=5716,Y=3731,W=100;
+#include<chrono>
+#include <vector>
+#include <chrono>
+const int X=5716,Y=3731,W=50;
 // カーネル(GPUの関数)
 __global__ void cudaKernel(int *gpu){
     // スレッドID
@@ -10,9 +12,6 @@ __global__ void cudaKernel(int *gpu){
     int xid=blockIdx.x*blockDim.x+threadIdx.x;
     int yid=blockIdx.y*blockDim.y+threadIdx.y;
     //W近傍の和を愚直にとる
-    if((yid*X+xid)%300000==0){
-        printf("%d\n",(int)gpu[yid*X+xid]);
-    }
     int V=0,kaz=0;
     for(int dy=0;dy<W;dy++){
         for(int dx=0;dx<W;dx++){
@@ -77,8 +76,9 @@ int main(int argc, char** argv){
     cudaMalloc((void**)&gpuwa, sizeof(int)*X*Y);
 
     // ホスト(CPU)からデバイス(GPU)へ転送
+    auto start = std::chrono::system_clock::now(); 
     cudaMemcpy(picgpu, pic, sizeof(int)*X*Y, cudaMemcpyHostToDevice);
-
+    auto end = std::chrono::system_clock::now();       // 計測終了時刻を保存
     printf("debug%d\n",__LINE__);
     // スレッド数、ブロック数の設定(説明は他のページ)
     dim3 blocks((X+15)/16,(Y+15)/16);
@@ -98,6 +98,10 @@ int main(int argc, char** argv){
         }
     }
     printf("debug%d\n",__LINE__);
+
+    auto msec = std::chrono::duration_cast<std::chrono::milliseconds>(dur).count();
+    // 要した時間をミリ秒（1/1000秒）に変換して表示
+    std::cout << msec << " milli sec \n";
     fclose(fpin);
     fclose(fpout);
     // ホストメモリ解放
