@@ -1,19 +1,18 @@
 #include <stdio.h>
 #include<cuda_runtime.h>
 #include <stdlib.h>
-#define N 100
 
-const int X=5716,Y=3731;
+const int X=5716,Y=3731,W=200;
 // カーネル(GPUの関数)
 __global__ void cudaKernel(int gpu[]){
     // スレッドID
 
     int xid=blockIdx.x*blockDim.x+threadIdx.x;
     int yid=blockIdx.y*blockDim.y+threadIdx.y;
-    //50近傍の和を愚直にとる
+    //W近傍の和を愚直にとる
     int V=0,kaz=0;
-    for(int dy=0;dy<50;dy++){
-        for(int dx=0;dx<50;dy++){
+    for(int dy=0;dy<W;dy++){
+        for(int dx=0;dx<W;dy++){
             int sx=xid-dx;
             int sy=yid-dy;
             if(sx<0||sy<0||sx>X||sy>Y){continue;}
@@ -22,7 +21,7 @@ __global__ void cudaKernel(int gpu[]){
         }
     }
     __syncthreads();
-    if(0<=yid&&yid+50<Y&&0<=xid&&xid+50<X){
+    if(0<=yid&&yid+W<Y&&0<=xid&&xid+W<X){
         gpu[yid*X+xid]=V/kaz;
     }
    
@@ -57,8 +56,8 @@ int main(int argc, char** argv){
             if (ch == '\n'){break;}
         }
         if (i == 1) {
-            fprintf(fpout, "%d %d\n", X-50, Y-50);
-            printf("%d %d\n", X-50, Y-50);
+            fprintf(fpout, "%d %d\n", X-W, Y-W);
+            printf("%d %d\n", X-W, Y-W);
         }
     }
 
@@ -89,8 +88,8 @@ int main(int argc, char** argv){
     cudaMemcpy(pic, picgpu, sizeof(int)*X*Y, cudaMemcpyDeviceToHost);
     printf("debug%d\n",__LINE__);
     
-    for (int i = 0; i+50 < Y; ++i) {
-        for (int j = 0; j+50 < X; ++j) {
+    for (int i = 0; i+W < Y; ++i) {
+        for (int j = 0; j+W < X; ++j) {
             fputc(pic[i*X+j], fpout);
             if((i*X+j)%300000==0){printf("%d\n",(int)pic[i*X+j]);}
         }
