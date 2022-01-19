@@ -75,10 +75,10 @@ int main(int argc, char** argv){
     //printf("debug%d\n",__LINE__);
     // デバイス(GPU)のメモリ領域確保
     cudaMalloc((void**)&picgpu, sizeof(int)*X*Y);
-    cudaMalloc((void**)&gpuwa, sizeof(int)*X*Y);
-
+    //cudaMalloc((void**)&gpuwa, sizeof(int)*X*Y);
+    std::cout <<"debug"<<__LINE__<<endl;
     // ホスト(CPU)からデバイス(GPU)へ転送
-    
+    auto startB = std::chrono::system_clock::now(); 
     cudaMemcpy(picgpu, pic, sizeof(int)*X*Y, cudaMemcpyHostToDevice);
           // 計測終了時刻を保存
     //printf("debug%d\n",__LINE__);
@@ -108,6 +108,8 @@ int main(int argc, char** argv){
     std::cout <<"keisan="<< msec << " milli sec \n";
     auto Amsec = std::chrono::duration_cast<std::chrono::milliseconds>(endA-startA).count();
     std::cout <<"All="<< Amsec << " milli sec \n";
+    auto Bmsec = std::chrono::duration_cast<std::chrono::milliseconds>(endA-startB).count();
+    std::cout <<"notnalloc="<< Bmsec << " milli sec \n";
     fclose(fpin);
     fclose(fpout);
     // ホストメモリ解放
