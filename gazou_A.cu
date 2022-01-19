@@ -117,7 +117,7 @@ int main(int argc, char** argv){
     
     // デバイスメモリ解放
     cudaFree(picgpu);
-    cudaFree(gpuwa);
+    //cudaFree(gpuwa);
     // 終了処理
     //CUT_EXIT(argc, argv);
     return 0;
