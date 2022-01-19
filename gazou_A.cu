@@ -28,7 +28,7 @@ __global__ void cudaKernel(int *gpu){
     }
    
 }
-
+using namespace std;
 int main(int argc, char** argv){
     
     //static int pic[Y*X];
