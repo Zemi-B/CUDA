@@ -70,6 +70,7 @@ int main(int argc, char** argv){
             //if((i*X+j)%300000==0){printf("%d\n",(int)ch);}
         }
     }
+    std::cout <<"debug"<<__LINE__<<endl;
     auto startA = std::chrono::system_clock::now(); 
     //printf("debug%d\n",__LINE__);
     // デバイス(GPU)のメモリ領域確保
@@ -92,6 +93,7 @@ int main(int argc, char** argv){
     cudaMemcpy(pic, picgpu, sizeof(int)*X*Y, cudaMemcpyDeviceToHost);
     //printf("debug%d\n",__LINE__);
     auto endA = std::chrono::system_clock::now(); 
+    std::cout <<"debug"<<__LINE__<<endl;
     for (int i = 0; i+W < Y; ++i) {
         for (int j = 0; j+W < X; ++j) {
             fputc(pic[i*X+j], fpout);
