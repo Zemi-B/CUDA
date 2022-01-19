@@ -101,12 +101,10 @@ int main(int argc, char** argv){
 
     //printf("debug%d\n",__LINE__);
 
-
-    auto dur = end - start;        // 要した時間を計算
-    auto msec = std::chrono::duration_cast<std::chrono::milliseconds>(dur).count();
+    auto msec = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
     // 要した時間をミリ秒（1/1000秒）に変換して表示
     std::cout <<"keisan="<< msec << " milli sec \n";
-    auto Amsec = std::chrono::duration_cast<std::chrono::milliseconds>(dur).count();
+    auto Amsec = std::chrono::duration_cast<std::chrono::milliseconds>(endA-startA).count();
     std::cout <<"All="<< Amsec << " milli sec \n";
     fclose(fpin);
     fclose(fpout);
