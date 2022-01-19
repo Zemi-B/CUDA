@@ -47,7 +47,7 @@ int main(int argc, char** argv){
     fpin = fopen(fin, "r");
     fpout = fopen(fout, "w");
     // xの初期化
-    printf("debug%d\n",__LINE__);
+    //printf("debug%d\n",__LINE__);
     //xとyをどうするかについて考える
     //bmp形式について考える
     unsigned char ch;
@@ -67,41 +67,47 @@ int main(int argc, char** argv){
         for (int j = 0; j < X; ++j) {
             ch = fgetc(fpin);
             pic[i*X+j] = ch;
-            if((i*X+j)%300000==0){printf("%d\n",(int)ch);}
+            //if((i*X+j)%300000==0){printf("%d\n",(int)ch);}
         }
     }
-    printf("debug%d\n",__LINE__);
+    auto startA = std::chrono::system_clock::now(); 
+    //printf("debug%d\n",__LINE__);
     // デバイス(GPU)のメモリ領域確保
     cudaMalloc((void**)&picgpu, sizeof(int)*X*Y);
     cudaMalloc((void**)&gpuwa, sizeof(int)*X*Y);
 
     // ホスト(CPU)からデバイス(GPU)へ転送
-    auto start = std::chrono::system_clock::now(); 
+    
     cudaMemcpy(picgpu, pic, sizeof(int)*X*Y, cudaMemcpyHostToDevice);
-    auto end = std::chrono::system_clock::now();       // 計測終了時刻を保存
-    printf("debug%d\n",__LINE__);
+          // 計測終了時刻を保存
+    //printf("debug%d\n",__LINE__);
     // スレッド数、ブロック数の設定(説明は他のページ)
     dim3 blocks((X+15)/16,(Y+15)/16);
     dim3 threads(16,16);
-
+    auto start = std::chrono::system_clock::now(); 
     // カーネル(GPUの関数)実行
     cudaKernel<<< blocks, threads >>>(picgpu);
-
+    auto end = std::chrono::system_clock::now(); 
     // デバイス(GPU)からホスト(CPU)へ転送
     cudaMemcpy(pic, picgpu, sizeof(int)*X*Y, cudaMemcpyDeviceToHost);
-    printf("debug%d\n",__LINE__);
-    
+    //printf("debug%d\n",__LINE__);
+    auto endA = std::chrono::system_clock::now(); 
     for (int i = 0; i+W < Y; ++i) {
         for (int j = 0; j+W < X; ++j) {
             fputc(pic[i*X+j], fpout);
-            if((i*X+j)%300000==0){printf("%d\n",(int)pic[i*X+j]);}
+            //if((i*X+j)%300000==0){printf("%d\n",(int)pic[i*X+j]);}
         }
     }
-    printf("debug%d\n",__LINE__);
+
+    //printf("debug%d\n",__LINE__);
+
+
     auto dur = end - start;        // 要した時間を計算
     auto msec = std::chrono::duration_cast<std::chrono::milliseconds>(dur).count();
     // 要した時間をミリ秒（1/1000秒）に変換して表示
-    std::cout << msec << " milli sec \n";
+    std::cout <<"keisan="<< msec << " milli sec \n";
+    auto Amsec = std::chrono::duration_cast<std::chrono::milliseconds>(dur).count();
+    std::cout <<"All="<< Amsec << " milli sec \n";
     fclose(fpin);
     fclose(fpout);
     // ホストメモリ解放
