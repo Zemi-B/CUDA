@@ -86,16 +86,16 @@ int main(int argc, char** argv){
     // スレッド数、ブロック数の設定(説明は他のページ)
     dim3 blocks((X+15)/16,(Y+15)/16);
     dim3 threads(16,16);
-    cudaDeviceSynchronize()
+    cudaDeviceSynchronize();
     auto start = std::chrono::system_clock::now(); 
     // カーネル(GPUの関数)実行
     cudaKernel<<< blocks, threads >>>(picgpu);
-    cudaDeviceSynchronize()
+    cudaDeviceSynchronize();
     auto end = std::chrono::system_clock::now(); 
     // デバイス(GPU)からホスト(CPU)へ転送
     cudaMemcpy(pic, picgpu, sizeof(int)*X*Y, cudaMemcpyDeviceToHost);
     //printf("debug%d\n",__LINE__);
-    cudaDeviceSynchronize()
+    cudaDeviceSynchronize();
     auto endA = std::chrono::system_clock::now(); 
     std::cout <<"debug"<<__LINE__<<endl;
     for (int i = 0; i+W < Y; ++i) {
